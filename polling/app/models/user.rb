@@ -15,4 +15,6 @@ class User < ActiveRecord::Base
     foreign_key: :user_id,
     primary_key: :id
   )
+
+  # def
 end

@@ -9,10 +9,10 @@ class AnswerChoice < ActiveRecord::Base
     primary_key: :id
   )
 
-  has_many(
-    :responses,
+  belongs_to(
+    :response,
     class_name: "Response",
-    foreign_key: :answer_choice_id,
+    foreign_key: :response_id,
     primary_key: :id
   )
 end

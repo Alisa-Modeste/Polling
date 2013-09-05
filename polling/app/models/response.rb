@@ -1,5 +1,5 @@
 class Response < ActiveRecord::Base
-  validate :respondent_has_not_already_answered_question
+  validate :respondent_has_not_already_answered_question, :author_not_responding
   attr_accessible :id
 
   belongs_to(
@@ -30,23 +30,30 @@ class Response < ActiveRecord::Base
   end
 
   def respondent_has_not_already_answered_question
-    # if existing_responses.empty? ||
- #      errors[:response] << "can't answer twice"
- #    end
- #
- #    existing_responses.answer_choices
 
     result = existing_responses
-    p "res #{result[0].id}"
-    p "sel #{self.id}"
-    unless result[0].id == self.id
+
+    unless self.id.nil? || result[0].id == self.id
       errors[:response] << "can't answer twice"
     end
   end
 
+  def users_polls
+     # res = Response.joins(:user).where("question_id = ?", self.question_id)
+#      res.joins(:user => :polls).where("polls.author_id = ?", self.user_id)
+    # Response.joins(:user => :polls).where("question_id = ? AND polls.author_id = ?", self.question_id, user.id)
 
-  def au
-    Response.joins(:user).where("question_id = ? AND users.id = ?", self.question_id, self.user_id)
+    Response.joins(:user).where("question_id = ?", self.question_id).joins("JOIN polls ON polls.author_id = responses.user_id")
+
+  end
+
+
+  def author_not_responding
+    #Response.joins(:user).where("question_id = ? AND users.id = ?", self.question_id, self.user_id)
+
+    if users_polls.empty?
+      errors[:response] << "can't answer own poll"
+    end
   end
 
 end

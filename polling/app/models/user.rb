@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   has_many(
     :polls,
     class_name: "Poll",
-    foreign_key: :poll_id,
+    foreign_key: :author_id,
     primary_key: :id
   )
 
@@ -16,5 +16,24 @@ class User < ActiveRecord::Base
     primary_key: :id
   )
 
+  has_many(
+    :questions,
+    through: :polls
+
+  )
+
+  has_many(
+    :answer_choices,
+    through: :questions
+    )
+
   # def
+
+  def self.users_polls
+
+   # User.joins(:polls).through
+#    ("JOIN response ON answer_choices.question_id = questions.id").joins("JOIN polls ON questions.poll_id = polls.id").where("polls.author_id = ?", self.user_id)
+  #  User.joins(:polls => {:responses => {:questions => :answer_choices }})
+  User.joins(:answer_choices )
+  end
 end

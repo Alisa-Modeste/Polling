@@ -38,20 +38,24 @@ class Response < ActiveRecord::Base
     end
   end
 
+  def users_polls0
+    #Response.joins(:user).where("question_id = ?", self.question_id).joins("JOIN polls ON polls.author_id = #{self.user_id}")
+    # Poll.joins(:user).where("author_id = ?", self.author_id).joins("JOIN response ON polls.author_id = #{self.user_id}"
+    # :responses)
+
+    #Response.joins(:answer_choice).joins(:question).joins(:poll).where("polls.author_id = ?", self.user_id)
+   # Response.joins(:answer_choice).joins(:questions).joins(:polls) #.where("polls.author_id = ?", self.user_id)
+
+   Response.joins("JOIN response ON answer_choices.question_id = questions.id").joins("JOIN polls ON questions.poll_id = polls.id").where("polls.author_id = ?", self.user_id)
+  end
+
   def users_polls
-     # res = Response.joins(:user).where("question_id = ?", self.question_id)
-#      res.joins(:user => :polls).where("polls.author_id = ?", self.user_id)
-    # Response.joins(:user => :polls).where("question_id = ? AND polls.author_id = ?", self.question_id, user.id)
-
-    Response.joins(:user).where("question_id = ?", self.question_id).joins("JOIN polls ON polls.author_id = responses.user_id")
-
+    User.users_polls.where("users.id = ?", self.user_id)
   end
 
 
   def author_not_responding
-    #Response.joins(:user).where("question_id = ? AND users.id = ?", self.question_id, self.user_id)
-
-    if users_polls.empty?
+    unless users_polls.empty?
       errors[:response] << "can't answer own poll"
     end
   end

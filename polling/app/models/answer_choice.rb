@@ -15,4 +15,10 @@ class AnswerChoice < ActiveRecord::Base
     foreign_key: :response_id,
     primary_key: :id
   )
+
+  def self.answer_choice_for_question(question_id)
+  #  Response.joins(:question).
+
+    AnswerChoice.joins("JOIN questions ON answer_choices.question_id = questions.id")
+  end
 end

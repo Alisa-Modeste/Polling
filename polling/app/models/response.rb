@@ -23,6 +23,16 @@ class Response < ActiveRecord::Base
    primary_key: :id
  )
 
+ # belongs_to(
+ #   :question,
+ #   through: :answer_choice)
+
+ def self.responses_for_question(question_id)
+ #  Response.joins(:question).
+
+   Response.joins("JOIN questions ON responses.question_id = questions.id")
+ end
+
   def existing_responses
    # User.includes(:response).where()
   # Response.where("question_id = ?", 1).includes(:user)

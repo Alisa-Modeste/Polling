@@ -18,25 +18,30 @@ class Question < ActiveRecord::Base
 
 
   #question > answerchoice > response
-  def results
-    responses = Response.responses_for_question(self.id)
-    hash = {}
+    def results
+		responses = Response.responses_for_question(self.id)
+		choices = AnswerChoice.answer_choices_for_question(self.id)
+		
+		choice_hash = {}
+		
+		choices.each do |choice|
+			choice_hash[ choice.id ] = choice.text
+		end
+		
+		response_hash = {}
 
-    puts "this is for testing..."
-    p Question.joins(:answer_choices)
-
-    responses.each do |r|
-      new_key = r.answer_choice_id
+		responses.each do |r|
+		  new_key = choice_hash[ r.answer_choice_id ] #[:text]
 
 
-      if hash.key?(new_key)
-        hash[new_key] += 1
-      else
-        hash[new_key] = 1
-      end
+		  if response_hash.key?(new_key)
+			response_hash[new_key] += 1
+		  else
+			response_hash[new_key] = 1
+		  end
+		end
+
+		response_hash
     end
-
-    hash
-  end
 
 end

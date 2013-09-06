@@ -17,7 +17,6 @@ class AnswerChoice < ActiveRecord::Base
   )
 
   def self.answer_choices_for_question(question_id)
-  #  Response.joins(:question).
 
     AnswerChoice.joins("JOIN questions ON answer_choices.question_id = questions.id")
   end

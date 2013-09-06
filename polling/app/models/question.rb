@@ -16,32 +16,30 @@ class Question < ActiveRecord::Base
     primary_key: :id
   )
 
+  def results
+    responses = Response.responses_for_question(self.id)
+    choices = AnswerChoice.answer_choices_for_question(self.id)
+    
+    choice_hash = {}
+    
+    choices.each do |choice|
+      choice_hash[ choice.id ] = choice.text
+    end
+    
+    response_hash = {}
 
-  #question > answerchoice > response
-    def results
-		responses = Response.responses_for_question(self.id)
-		choices = AnswerChoice.answer_choices_for_question(self.id)
-		
-		choice_hash = {}
-		
-		choices.each do |choice|
-			choice_hash[ choice.id ] = choice.text
-		end
-		
-		response_hash = {}
-
-		responses.each do |r|
-		  new_key = choice_hash[ r.answer_choice_id ] #[:text]
+    responses.each do |r|
+      new_key = choice_hash[ r.answer_choice_id ]
 
 
-		  if response_hash.key?(new_key)
-			response_hash[new_key] += 1
-		  else
-			response_hash[new_key] = 1
-		  end
-		end
+      if response_hash.key?(new_key)
+        response_hash[new_key] += 1
+      else
+        response_hash[new_key] = 1
+      end
+    end
 
-		response_hash
+    response_hash
     end
 
 end
